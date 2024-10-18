@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shym AI with Voice Input and Output</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .navbar {
+            background-color: #2a2a2a;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            color: #f6d115;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .content {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .hero {
+            margin-top: 50px;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        }
+        .btn-primary {
+            background-color: #00ffff;
+            border-color: #00ffff;
+        }
+        .btn-primary:hover {
+            background-color: #00bfff;
+            border-color: #00bfff;
+        }
+        .input-group-text {
+            background-color: #2a2a2a;
+            color: #f0f0f0;
+            border: none;
+        }
+        .form-control {
+            background-color: #333;
+            color: #fff;
+            border: none;
+        }
+        footer {
+            margin-top: 100px;
+            text-align: center;
+            color: #888;
+        }
+        .voice-buttons {
+            margin-top: 20px;
+        }
+        .response-text {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Shym AI</a>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="hero">
+            <h1>Welcome to Shym AI</h1>
+            <p>Explore the future of AI with seamless interaction and cutting-edge technology.</p>
+            <button class="btn btn-primary">Get Started</button>
+        </section>
+    </div>
+
+    <!-- AI Interaction Section -->
+    <div class="container mt-5">
+        <h2>Interact with Shym using Voice</h2>
+        <div class="input-group mt-4">
+            <span class="input-group-text">Ask AI:</span>
+            <input type="text" class="form-control" id="userInput" placeholder="Enter your question...">
+            <button class="btn btn-primary" id="submitText">Submit</button>
+        </div>
+
+        <!-- Voice Input and Output -->
+        <div class="voice-buttons">
+            <button class="btn btn-secondary" id="startVoice">🎤 Speak</button>
+            <button class="btn btn-secondary" id="stopVoice">⏹️ Stop</button>
+        </div>
+
+        <!-- AI Response -->
+        <div class="response-text" id="responseText"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Shym AI © 2024. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Speech Recognition API (Web Speech API)
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        const userInput = document.getElementById('userInput');
+        const responseText = document.getElementById('responseText');
+
+        // Start voice recognition
+        document.getElementById('startVoice').addEventListener('click', () => {
+            recognition.start();
+        });
+
+        // Stop voice recognition
+        document.getElementById('stopVoice').addEventListener('click', () => {
+            recognition.stop();
+        });
+
+        // Handling recognition results
+        recognition.addEventListener('result', (event) => {
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript;
+            processInput(transcript); // Process the recognized input
+        });
+
+        recognition.addEventListener('end', () => {
+            console.log('Voice recognition ended.');
+        });
+
+        // Process user input (text or voice)
+        function processInput(input) {
+            // Example response based on input
+            let response = '';
+
+            if (input.toLowerCase().includes('hello')) {
+                response = 'Hello! How can I assist you today?';
+            } else {
+                response = 'Sorry, I did not understand that. Can you please try again?';
+            }
+
+            // Display and speak the response
+            responseText.innerText = response;
+            speak(response);
+        }
+
+        // Submit text input
+        document.getElementById('submitText').addEventListener('click', () => {
+            const input = userInput.value;
+            processInput(input);
+        });
+
+        // Speech Synthesis API (Text-to-Speech)
+        function speak(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'en-US';
+            speech.pitch = 1;
+            speech.rate = 1;
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+</body>
+</html>
